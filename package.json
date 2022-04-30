@@ -26,12 +26,14 @@
     ],
     "rules": {
       "semi": "off",
-      "quotes":["error","single"]
-      
+      "quotes": [
+        "off",
+        "single"
+      ]
     }
   },
-  "lint-staged" :{
-    "**/*.js" :[
+  "lint-staged": {
+    "**/*.js": [
       "eslint --fix",
       "prettier --write",
       "git add"
