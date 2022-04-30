@@ -26,7 +26,7 @@
     "rules": {
       "semi": "off",
       "quotes": [
-        "off",
+        "error",
         "single"
       ]
     }
@@ -34,8 +34,12 @@
   "lint-staged": {
     "**/*.js": [
       "eslint --fix",
+      "prettier --write",
       "git add"
     ]
+  },
+  "prettier" :{
+    "singleQuote": true
   },
   "browserslist": {
     "production": [
@@ -51,6 +55,7 @@
   },
   "devDependencies": {
     "husky": "^7.0.4",
-    "lint-staged": "^12.4.1"
+    "lint-staged": "^12.4.1",
+    "prettier": "^2.6.2"
   }
 }
