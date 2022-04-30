@@ -25,7 +25,9 @@
       "react-app/jest"
     ],
     "rules": {
-      "semi": "off"
+      "semi": "off",
+      "quotes":["error","single"]
+      
     }
   },
   "lint-staged" :{
