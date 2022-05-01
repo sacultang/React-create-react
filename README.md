@@ -327,10 +327,10 @@ export default function About(props) {
 }
 ```
 
-![](https://sacultang.github.io/images/query/qs03.png)
-문자열 mark가 찍힌다  
-![](https://sacultang.github.io/images/query/qs04.png)
-쿼리로 받아온걸 출력 할 수 있다
+![](https://sacultang.github.io/images/query/qs03.png)<br>
+문자열 mark가 찍힌다 <br>
+![](https://sacultang.github.io/images/query/qs04.png)<br>
+쿼리로 받아온걸 출력 할 수 있다<br>
 
 - URLSearchParams 의 단점
   - URLSearchParams 의 메서드를 다 기억하고 사용해야 한다.
@@ -367,3 +367,52 @@ export default function About(props) {
 
 > console.log(query)를 해보면 이상한 에러가 잔뜩 뜬다..
 > 검색해봐도 무슨 말인지 잘 모르겠다
+
+## Switch 와 NotFound
+
+여러 route 중 순서대로 먼저 맞는 하나만 보여준다
+
+- exact를 뺄 수 있는 로직을 만들 수 있다
+- 가장 마지막에 어디 path에도 맞지 않으면 보여지는 컴포넌트를 설정해서, "Not Found"페이지를 만들 수 있다
+
+```js
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import './App.css'
+import Home from './pages/Home'
+import Profile from './pages/Profile'
+import About from './pages/About'
+import NotFound from './pages/NotFound'
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Switch>
+        <Route path='/profile/:id' component={Profile}></Route>
+        <Route path='/profile' component={Profile}></Route>
+        <Route path='/about' component={About}></Route>
+        <Route path='/' exact component={Home}></Route>
+        {/* Not Found */}
+        <Route component={NotFound}></Route>
+      </Switch>
+    </BrowserRouter>
+  )
+}
+export default App
+```
+
+- Path의 순서를 조정해준다
+
+  - 루트경로인 '/'은 모든 경로에 포함되어 있기 때문이다
+  - 루트경로인 '/'은 exact 여야 한다
+  - profile과 profile/:id 는 porfile이 겹치는 범주이기 때문에 exact를 쓰지 않고 표현할려면 순서를 조정해야 한다
+
+- NotFound 페이지는 path를 지정하지 않고 컴포넌트를 지정해준다
+
+```js
+export default function NotFound() {
+  return <div> 페이지를 찾을 수 없습니다 </div>
+}
+```
+
+![](https://sacultang.github.io/images/switch/notfound.png)  
+없는 주소일 경우 notfound 컴포넌트를 출력한다
