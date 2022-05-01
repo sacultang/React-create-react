@@ -191,6 +191,7 @@ export default App
 ```
 
 about 페이지에 들어가도 home 컴포넌트가 같이 렌더 된다
+
 ![](https://sacultang.github.io/images/router02.png)
 
 about path에 '/'가 포함되어 있기 때문에 루트경로인 Home도 출력되는 것<br>
@@ -210,6 +211,7 @@ function App() {
 ```
 
 ![](https://sacultang.github.io/images/route03.png)
+
 이제 home이 같이 출력 되지 않는다
 
 만약 경로가 '/profile'의 하위라면 (ex: '/profile/name') profile의 route에 exact를 추가 해주면 된다
@@ -281,7 +283,7 @@ export default function About(props) {
 }
 ```
 
-![](https://sacultang.github.io/images/query/qs01.png)
+![](https://sacultang.github.io/images/query/qs01.png)  
 라우트처리 한 것과는 다르게 key.value 형식으로 된 것은 보이지 않는다  
 search에 있는 "?name=mark"를 key.value 형식으로 처리 해줄 필요가 있다
 
@@ -365,5 +367,3 @@ export default function About(props) {
 
 > console.log(query)를 해보면 이상한 에러가 잔뜩 뜬다..
 > 검색해봐도 무슨 말인지 잘 모르겠다
-
-1. URLSearchParams
