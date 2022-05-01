@@ -145,9 +145,9 @@ $ npx husky add .husky/pre-commit "npx lint-staged"
 ```
 
 git add 후 커밋을 하면 eslint 규칙을 체크해 준다, 그리고 prettier 룰에 맞게 수정해준다
-![](./images/lint-01.png)  
-![](./images/lint-02.png)  
-![](./images/lint-03.png)  
+![](https://sacultang.github.io/images/lint-01.png)  
+![](https://sacultang.github.io/images/lint-02.png)  
+![](https://sacultang.github.io/images/lint-03.png)  
 쌍따옴표가 홑따옴표로 수정 되었다
 
 ## React-router-dom
@@ -191,7 +191,7 @@ export default App
 ```
 
 about 페이지에 들어가도 home 컴포넌트가 같이 렌더 된다
-![](./images/router02.png)
+![](https://sacultang.github.io/images/router02.png)
 
 about path에 '/'가 포함되어 있기 때문에 루트경로인 Home도 출력되는 것<br>
 path가 완전히 같을경우에만 해당 페이지가 보이도록 exact를 Route에 추가 해준다
@@ -209,7 +209,7 @@ function App() {
 }
 ```
 
-![](./images/route03.png)
+![](https://sacultang.github.io/images/route03.png)
 이제 home이 같이 출력 되지 않는다
 
 만약 경로가 '/profile'의 하위라면 (ex: '/profile/name') profile의 route에 exact를 추가 해주면 된다
@@ -252,8 +252,118 @@ export default function Profile(props) {
 /profile/1 주소로 접속 해본다
 
 - 컴포넌트에서 데이터가 들어올때는 props로 받아온다 console로 props를 찍었을 시
-  ![](./images/route05.png)
+  ![](https://sacultang.github.io/images/route05.png)
 
 ```
 url에 :id로 지정했던 key와 주소로 접속할때 사용한 값인 1이 params의 값으로 들어가 있다
 ```
+
+### Dynamic 라우팅 (2)
+
+```
+http://localhost:3000/about?name=mark
+```
+
+- 주소 뒤에 ?로 시작해서 뒤에 붙는것은 쿼리 스트링이다
+- 쿼리가 있어도 페이지는 about이며 없어도 about이다.
+- 쿼리가 붙는다고 해서 profile처럼 추가적으로 라우트 처리를 할 필요가 없다
+
+```js
+export default function About(props) {
+  console.log(props)
+
+  return (
+    <div>
+      <h2>About 페이지 입니다.</h2>
+      {query.name && <p>name은 {query.name}입니다.</p>}
+    </div>
+  )
+}
+```
+
+![](https://sacultang.github.io/images/query/qs01.png)
+라우트처리 한 것과는 다르게 key.value 형식으로 된 것은 보이지 않는다  
+search에 있는 "?name=mark"를 key.value 형식으로 처리 해줄 필요가 있다
+
+### URLSearchParams
+
+브라우저에 내장 되어 있는 객체이다
+
+> https://developer.mozilla.org/ko/docs/Web/API/URLSearchParams
+
+```js
+export default function About(props) {
+  const searchParams = props.location.search
+  console.log(searchParams)
+  const obj = new URLSearchParams(searchParams)
+  console.log(obj)
+  return (
+    <div>
+      <h2>About 페이지 입니다.</h2>
+    </div>
+  )
+}
+```
+
+- console.log(searchParams) -> 문자열로 ?name=mark 가 콘솔에 찍힌다
+- console.log(obj) -> 아무것도 보이지 않는다 추가적으로 처리를 해줘야 한다
+  ![](https://sacultang.github.io/images/query/qs02.png)
+
+```js
+export default function About(props) {
+  const searchParams = props.location.search
+  console.log(searchParams)
+  const obj = new URLSearchParams(searchParams)
+  console.log(obj.get('name'))
+  const objName = obj.get('name')
+  return (
+    <div>
+      <h2>About 페이지 입니다.</h2>
+      {objName && <p>name은 {objName}입니다</p>}
+    </div>
+  )
+}
+```
+
+![](https://sacultang.github.io/images/query/qs03.png)
+문자열 mark가 찍힌다  
+![](https://sacultang.github.io/images/query/qs04.png)
+쿼리로 받아온걸 출력 할 수 있다
+
+- URLSearchParams 의 단점
+  - URLSearchParams 의 메서드를 다 기억하고 사용해야 한다.
+  - 브라우저 객체이기 때문에 브라우저에 따라서 지원하지 않는 경우도 있다
+
+### query-string
+
+URLSearchParams의 단점인 바로 키로 꺼내 사용 할 수 있도록 해준다
+
+```bash
+$ npm i query-string
+```
+
+```js
+// query-string을 import 해준다
+import queryString from 'query-string'
+
+export default function About(props) {
+  const searchParams = props.location.search
+  const query = queryString.parse(searchParams)
+  // searchParams 문자열을 파싱 해준다
+
+  return (
+    <div>
+      <h2>About 페이지 입니다.</h2>
+      {query.name && <p>name은 {query.name}입니다.</p>}
+    </div>
+  )
+}
+```
+
+![](https://sacultang.github.io/images/query/qs05.png)
+{name:mark} 처럼 객체형식으로 잘 나온다
+
+> console.log(query)를 해보면 이상한 에러가 잔뜩 뜬다..
+> 검색해봐도 무슨 말인지 잘 모르겠다
+
+1. URLSearchParams
