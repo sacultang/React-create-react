@@ -416,3 +416,165 @@ export default function NotFound() {
 
 ![](https://sacultang.github.io/images/switch/notfound.png)  
 없는 주소일 경우 notfound 컴포넌트를 출력한다
+
+# React-router-dom v6
+
+강의에서는 5버전으로 강의해서 그냥 따라하다가 안돼서 v6으로 버전업해서 진행..
+
+## Routes
+
+5버전에 있던 Switch가 Routes로 변경되었다  
+그리고 Route를 Routes로 감싸주지 않으면 에러가 발생한다
+![](https://sacultang.github.io/images/route/01.png)
+
+```js
+import { Routes, Route } from 'react-router-dom'
+import './App.css'
+
+import Home from './pages/Home'
+import Profile from './pages/Profile'
+import About from './pages/About'
+import NotFound from './pages/NotFound'
+import Links from './components/Links'
+import NavLinks from './components/NavLinks'
+import Login from './pages/Login'
+
+function App() {
+  return (
+    <>
+      <Links></Links>
+      <NavLinks></NavLinks>
+      <Routes>
+        <Route path='/login' element={<Login></Login>}></Route>
+        <Route path='/profile/:id' element={<Profile />}></Route>
+        <Route path='/profile' element={<Profile />}></Route>
+        <Route path='/about' element={<About />}></Route>
+        <Route path='/' element={<Home />}></Route>
+        {/* Not Found */}
+        <Route path='/*' element={<NotFound />}></Route>
+      </Routes>
+    </>
+  )
+}
+export default App
+```
+
+> - Route 에서 변경점
+
+    - 5에서는 component = { Home } 방식으로 연결했다면
+    - 6에서는 element = {\<Home />} 처럼 컴포넌트를 연결 해줘야 한다
+
+> - exact를 통해 복수 라우팅을 방지했는데 exact가 삭제됨
+
+    - 여러 라우팅을 매칭하기 위해 '*' 을 붙인다
+
+```js
+<Route path='/*' element={<NotFound />}></Route>
+```
+
+## URL 파라미터와 쿼리
+
+- 파라미터 : 'profile/1'
+- 쿼리 : 'about?name=mark'
+
+### URL 파라미터 useParams
+
+6버전에서는
+useParams로 파라미터를 조회한다
+
+```js
+import { useParams } from 'react-router-dom'
+function Profile() {
+  const parmas = useParams()
+  console.log(params)
+  return (
+    <div>
+      <h2>Profile 페이지 입니다.</h2>
+
+      {parmas.id && <p>id 는 {parmas.id} 입니다</p>}
+    </div>
+  )
+}
+export default Profile
+```
+
+console로 찍어보면 객체데이터로 출력된다  
+![](https://sacultang.github.io/images/route/02.png)
+
+### URL 쿼리
+
+useLocation을 사용해 조회한다<br>
+URL 쿼리는 "?name=mark"과 같이 문자열로 되어 있고, 특정 값을 읽어 오기 위해서는 문자열을 객체 형태로 반환해야한다. 그 과정에서 qs 라는 라이브러리를 사용한다.
+
+```js
+import queryString from 'query-string'
+import { useLocation } from 'react-router-dom'
+
+export default function About() {
+  const search = useLocation()
+  console.log(search)
+  return (
+    <div>
+      <h2>About</h2>
+    </div>
+  )
+}
+```
+
+search를 콘솔로 찍어보면 여러 속성이 들어있다 <br>
+![](https://sacultang.github.io/images/route/03.png) <br>
+현재 프로젝트에서는 search 부분만 필요하므로 search만 구조분해로 받아온다
+
+```js
+import queryString from 'query-string'
+import { useLocation } from 'react-router-dom'
+
+export default function About() {
+  const { search } = useLocation()
+  console.log(search)
+  return (
+    <div>
+      <h2>About</h2>
+    </div>
+  )
+}
+```
+
+![](https://sacultang.github.io/images/route/04.png)
+
+문자열로 찍힌다
+qs로 격체 형태로 변환해서 사용 하면 된다
+
+```js
+import queryString from 'query-string'
+import { useLocation } from 'react-router-dom'
+
+export default function About() {
+  const { search } = useLocation()
+  console.log(search)
+  const query = queryString.parse(search)
+  return (
+    <div>
+      <h2>About</h2>
+      {query.name && <p>name은 {query.name}입니다.</p>}
+    </div>
+  )
+}
+```
+
+## useNavigate
+
+useNavigate를 통해 사용자를 특정 Url로 리디렉션 한다
+
+```js
+import { useNavigate } from 'react-router-dom'
+export default function LoginButton() {
+  const navigate = useNavigate()
+  function login() {
+    setTimeout(() => {
+      navigate('/')
+    }, 1000)
+  }
+  return <button onClick={login}>로그인하기</button>
+}
+```
